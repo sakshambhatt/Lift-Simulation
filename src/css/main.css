@@ -1,0 +1,37 @@
+.floorplan {
+  margin-top: 5rem;
+  background-color: #92d293;
+  height: 65vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.floorNumber {
+  position: relative;
+  bottom: 1rem;
+  left: 0.5rem;
+}
+.line {
+  height: 0.1rem;
+  background-color: black;
+}
+.lift {
+	width: 1rem;
+	background-color: #364f45;
+	height: 2rem;
+	position: relative;
+	left: 1rem;
+	bottom: 4rem;
+}
+.hidden-lift {
+	width: 1rem;
+	background-color: transparent;
+	height: 2rem;
+	position: relative;
+	left: 1rem;
+	bottom: 4rem;
+}
+.lift-array {
+	display: flex;
+	justify-content: space-around;
+}
