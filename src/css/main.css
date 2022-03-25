@@ -16,22 +16,30 @@
   background-color: black;
 }
 .lift {
-	width: 1rem;
-	background-color: #364f45;
-	height: 2rem;
-	position: relative;
-	left: 1rem;
-	bottom: 4rem;
+  width: 1rem;
+  background-color: #364f45;
+  height: 2rem;
+  position: relative;
+  left: 1rem;
+  bottom: 4rem;
 }
-.hidden-lift {
-	width: 1rem;
-	background-color: transparent;
-	height: 2rem;
-	position: relative;
-	left: 1rem;
-	bottom: 4rem;
+.hidden {
+  visibility: hidden;
 }
 .lift-array {
-	display: flex;
-	justify-content: space-around;
+  display: flex;
+  justify-content: space-around;
+}
+.lift-array button {
+  position: relative;
+  left: 1rem;
+  bottom: 5rem;
+}
+.button-list {
+  display: flex;
+  flex-direction: column;
+}
+.lift-package {
+  display: flex;
+  row-gap: 1rem;
 }
