@@ -18,10 +18,11 @@
 .lift {
   width: 1rem;
   background-color: #364f45;
-  height: 2rem;
+  height: 3rem;
   position: relative;
   left: 1rem;
-  bottom: 4rem;
+  bottom: 5rem;
+  margin-left: 0.1rem;
 }
 .hidden {
   visibility: hidden;
