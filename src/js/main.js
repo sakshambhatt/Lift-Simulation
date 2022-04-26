@@ -1,16 +1,37 @@
 const floorPlan = [];
 
-// if i = floorPlan.length - 1
-const upButtonList = `<ul class="button-list"><button class="hidden">u</button><button>d</button></ul>`;
-// else if i = 0
-const downButtonList = `<ul class="button-list"><button>u</button><button class="hidden">d</button></ul>`;
-// else
-const normalButtonList = `<ul class="button-list"><button>u</button><button class>d</button></ul>`;
+function getButtonList(floorNumber, floorCount) {
+  // if floorNumber = floorCount - 1
+  const upButtonList = `<ul class="button-list"><button class="hidden">u</button><button onclick=${callToFloor(
+    floorNumber
+  )}>d</button></ul>`;
+  // else if floorNumber = 0
+  const downButtonList = `<ul class="button-list"><button onclick=${callToFloor(
+    floorNumber
+  )}>u</button><button class="hidden">d</button></ul>`;
+  // else
+  const normalButtonList = `<ul class="button-list"><button onclick=${callToFloor(
+    floorNumber
+  )}>u</button><button onclick=${callToFloor(floorNumber)}>d</button></ul>`;
 
-// if currentFloor[j] === 1
-const visibleLift = `<div class="lift"></div>`;
-// else
-const hiddenLift = `<div class="hidden lift"></div>`;
+  let buttonList = "";
+  switch (floorCount) {
+    case floorCount - 1:
+      buttonList = upButtonList;
+      break;
+    case 0:
+      buttonList = downButtonList;
+      break;
+    default:
+      buttonList = normalButtonList;
+      break;
+  }
+  return buttonList;
+}
+
+function getLift(liftId) {
+  return `<div class="lift" id=lift${liftId}></div>`;
+}
 
 function setFloorPlan() {
   const floorCount = parseInt(document.getElementById("floors").value);
@@ -23,17 +44,13 @@ function setFloorPlan() {
   window.sessionStorage.setItem("floorPlan", JSON.stringify(floorPlan));
 }
 
-// continue from here
-// every package is a flex-h
-// composed of buttonList
-// and lift
-function generateLiftPackageArrTemplate(currentFloor, buttonList) {
+function generateLiftPackageArrTemplate(floorNum, currentFloor, buttonList) {
   let liftPackageArr = `<ul class="lift-array">`;
   for (let j = 0; j < currentFloor.length; ++j) {
     // generating lift plan
     let liftPackage = `<ul class="lift-package">`;
     liftPackage += buttonList;
-    liftPackage += currentFloor[j] === 1 ? visibleLift : hiddenLift;
+    liftPackage += currentFloor[j] === 1 ? getLift(`${floorNum}${j}`) : ``;
     liftPackage += `</ul>`;
     liftPackageArr += liftPackage;
   }
@@ -41,27 +58,24 @@ function generateLiftPackageArrTemplate(currentFloor, buttonList) {
   return liftPackageArr;
 }
 
+function callToFloor(floorNumber) {
+  // diff between bottom of lift and bottom of floor line
+  // move lift down by diff
+  // transition 1s
+}
+
 function generateUI() {
   let floors = "";
   for (let i = floorPlan.length - 1; i > -1; --i) {
     const floorNumTemplate = `<small class="floorNumber">${i}</small>`;
-    let buttonList = "";
-    switch (i) {
-      case floorPlan.length - 1:
-        buttonList = upButtonList;
-        break;
-      case 0:
-        buttonList = downButtonList;
-        break;
-      default:
-        buttonList = normalButtonList;
-        break;
-    }
+    const buttonList = getButtonList(i, floorPlan.length);
+
     const liftPackageArrTemplate = generateLiftPackageArrTemplate(
+      i,
       floorPlan[i],
       buttonList
     );
-    floors += `<div class="line">${floorNumTemplate}${liftPackageArrTemplate}</div>`;
+    floors += `<div class="line" id=${i}>${floorNumTemplate}${liftPackageArrTemplate}</div>`;
   }
   document.getElementById("floorplan").innerHTML = floors;
 }
