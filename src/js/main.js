@@ -1,21 +1,27 @@
 const floorPlan = [];
 
-function getButtonList(floorNumber, floorCount) {
+function getButtonList(floorCount, floorNumber, liftNum) {
   // if floorNumber = floorCount - 1
-  const upButtonList = `<ul class="button-list"><button class="hidden">u</button><button onclick=${callToFloor(
-    floorNumber
-  )}>d</button></ul>`;
+  const upButtonList = `<ul class="button-list"><button class="hidden">u</button><button onclick="callToFloor(
+    ${floorNumber},
+    ${liftNum}
+  )">d</button></ul>`;
   // else if floorNumber = 0
-  const downButtonList = `<ul class="button-list"><button onclick=${callToFloor(
-    floorNumber
-  )}>u</button><button class="hidden">d</button></ul>`;
+  const downButtonList = `<ul class="button-list"><button onclick="callToFloor(
+    ${floorNumber},
+    ${liftNum}
+  )">u</button><button class="hidden">d</button></ul>`;
   // else
-  const normalButtonList = `<ul class="button-list"><button onclick=${callToFloor(
-    floorNumber
-  )}>u</button><button onclick=${callToFloor(floorNumber)}>d</button></ul>`;
+  const normalButtonList = `<ul class="button-list"><button onclick="callToFloor(
+    ${floorNumber},
+    ${liftNum}
+  )">u</button><button onclick="callToFloor(
+    ${floorNumber},
+    ${liftNum}
+  )">d</button></ul>`;
 
   let buttonList = "";
-  switch (floorCount) {
+  switch (floorNumber) {
     case floorCount - 1:
       buttonList = upButtonList;
       break;
@@ -29,8 +35,18 @@ function getButtonList(floorNumber, floorCount) {
   return buttonList;
 }
 
-function getLift(liftId) {
-  return `<div class="lift" id=lift${liftId}></div>`;
+function getLift(liftNum, visibility) {
+  return visibility
+    ? `<div class="lift" id=lift${liftNum}></div>`
+    : `<div class="lift hidden"></div>`;
+}
+
+function getCurrentFloor(liftNum) {
+  let currentFloor = 0;
+  for (let i; i < floorPlan.length; ++i) {
+    currentFloor = floorPlan[i][liftNum] === 1 && i;
+  }
+  return currentFloor;
 }
 
 function setFloorPlan() {
@@ -41,16 +57,20 @@ function setFloorPlan() {
     floorPlan.push(Array(liftCount).fill(0));
   }
   // to see currentFloorPlan
-  window.sessionStorage.setItem("floorPlan", JSON.stringify(floorPlan));
+  // window.sessionStorage.setItem("floorPlan", JSON.stringify(floorPlan));
 }
 
-function generateLiftPackageArrTemplate(floorNum, currentFloor, buttonList) {
+function generateLiftPackageArrTemplate(floorCount, floorNum, currentFloor) {
   let liftPackageArr = `<ul class="lift-array">`;
   for (let j = 0; j < currentFloor.length; ++j) {
     // generating lift plan
     let liftPackage = `<ul class="lift-package">`;
+
+    const buttonList = getButtonList(floorCount, floorNum, `${j}`);
+
     liftPackage += buttonList;
-    liftPackage += currentFloor[j] === 1 ? getLift(`${floorNum}${j}`) : ``;
+    liftPackage +=
+      currentFloor[j] === 1 ? getLift(`${j}`, true) : getLift(`${j}`, false);
     liftPackage += `</ul>`;
     liftPackageArr += liftPackage;
   }
@@ -58,22 +78,37 @@ function generateLiftPackageArrTemplate(floorNum, currentFloor, buttonList) {
   return liftPackageArr;
 }
 
-function callToFloor(floorNumber) {
-  // diff between bottom of lift and bottom of floor line
-  // move lift down by diff
-  // transition 1s
+function callToFloor(desiredFloorNum, liftNum) {
+  // desired floor's floorLine element
+  const desiredFloorLineRect = document
+    .getElementById(desiredFloorNum)
+    .getBoundingClientRect();
+
+  // currentFloor's floorLine element
+  const currentFloorNum = getCurrentFloor(liftNum);
+  const currentFloorLineRect = document
+    .getElementById(currentFloorNum)
+    .getBoundingClientRect();
+
+  // diff between bottoms of currentFloorLine and desiredFloorLine
+  const diff = -1 * (currentFloorLineRect.bottom - desiredFloorLineRect.bottom);
+
+  // lift element of lifId
+  const liftElement = document.getElementById(`lift${liftNum}`);
+
+  // move lift
+  liftElement.style.setProperty("transform", `translate(0, ${diff}px)`);
 }
 
 function generateUI() {
   let floors = "";
   for (let i = floorPlan.length - 1; i > -1; --i) {
     const floorNumTemplate = `<small class="floorNumber">${i}</small>`;
-    const buttonList = getButtonList(i, floorPlan.length);
 
     const liftPackageArrTemplate = generateLiftPackageArrTemplate(
+      floorPlan.length,
       i,
-      floorPlan[i],
-      buttonList
+      floorPlan[i]
     );
     floors += `<div class="line" id=${i}>${floorNumTemplate}${liftPackageArrTemplate}</div>`;
   }
