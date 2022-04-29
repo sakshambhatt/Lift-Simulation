@@ -1,4 +1,4 @@
-const floorPlan = [];
+let floorPlan = [];
 let consecutiveFloorDiff = 0;
 
 function getButtonList(floorCount, floorNumber, liftNum) {
@@ -143,8 +143,6 @@ function generateUI() {
     document.getElementById(0).getBoundingClientRect().bottom -
       document.getElementById(1).getBoundingClientRect().bottom
   );
-
-  window.sessionStorage.setItem("floorDiff", consecutiveFloorDiff);
 }
 
 function resetUI() {
