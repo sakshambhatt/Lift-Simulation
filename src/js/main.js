@@ -154,7 +154,7 @@ function resetUI() {
 }
 
 function resetState() {
-  floorPlan.splice(0, floorPlan.length);
+  floorPlan = [];
   window.sessionStorage.setItem("floorPlan", floorPlan);
 }
 
