@@ -3,31 +3,31 @@ let consecutiveFloorDiff = 0;
 
 function getButtonList(floorCount, floorNumber, liftNum) {
   // if floorNumber = floorCount - 1
-  const upButtonList = `<ul class="button-list"><button class="hidden">u</button><button onclick="callToFloor(
+  const upButtonList = `<ul class="button-list"><button onclick="callToFloor(
     ${floorNumber},
     ${liftNum}
-  )">d</button></ul>`;
+  )"><img src="../../assets/up.png" alt="up"/></button><button class="hidden">d</button></ul>`;
   // else if floorNumber = 0
-  const downButtonList = `<ul class="button-list"><button onclick="callToFloor(
+  const downButtonList = `<ul class="button-list"><button class="hidden">u</button><button onclick="callToFloor(
     ${floorNumber},
     ${liftNum}
-  )">u</button><button class="hidden">d</button></ul>`;
+  )"><img src="../../assets/down.png" alt="up"/></button></ul>`;
   // else
   const normalButtonList = `<ul class="button-list"><button onclick="callToFloor(
     ${floorNumber},
     ${liftNum}
-  )">u</button><button onclick="callToFloor(
+  )"><img src="../../assets/up.png" alt="up"/></button><button onclick="callToFloor(
     ${floorNumber},
     ${liftNum}
-  )">d</button></ul>`;
+  )"><img src="../../assets/down.png" alt="up"/></button></ul>`;
 
   let buttonList = "";
   switch (floorNumber) {
     case floorCount - 1:
-      buttonList = upButtonList;
+      buttonList = downButtonList;
       break;
     case 0:
-      buttonList = downButtonList;
+      buttonList = upButtonList;
       break;
     default:
       buttonList = normalButtonList;

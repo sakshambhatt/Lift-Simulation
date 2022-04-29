@@ -1,5 +1,32 @@
+h1 {
+  text-align: center;
+}
+
+.form-input {
+  display: flex;
+  flex-direction: column;
+}
+
+@media only screen and (min-width: 600px) {
+  .form-input {
+    margin-left: 20%;
+    margin-right: 20%;
+  }
+}
+
+.button-row {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.button-row button {
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
 .floorplan {
-  margin-top: 5rem;
+  margin-top: 2.5rem;
   background-color: #92d293;
   height: 65vh;
   display: flex;
@@ -40,6 +67,16 @@
   flex-direction: column;
   margin-right: 0.5rem;
 }
+
+.button-list button {
+  background-color: transparent;
+  border: none;
+}
+
+img {
+  width: 16px;
+}
+
 .lift-package {
   display: flex;
   row-gap: 1rem;
