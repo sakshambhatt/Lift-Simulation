@@ -1,3 +1,9 @@
+/* temporary */
+body {
+  background-color: black;
+  color: silver;
+}
+
 .floorplan {
   margin-top: 5rem;
   background-color: #92d293;
@@ -16,7 +22,6 @@
   background-color: black;
 }
 .lift {
-  transition: all 1s;
   width: 1rem;
   background-color: #364f45;
   height: 3rem;

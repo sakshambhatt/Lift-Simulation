@@ -1,4 +1,5 @@
 const floorPlan = [];
+let consecutiveFloorDiff = 0;
 
 function getButtonList(floorCount, floorNumber, liftNum) {
   // if floorNumber = floorCount - 1
@@ -43,13 +44,15 @@ function getLift(liftNum, visibility) {
 
 function getCurrentFloor(liftNum) {
   let currentFloor = 0;
-  for (let i; i < floorPlan.length; ++i) {
-    currentFloor = floorPlan[i][liftNum] === 1 && i;
+  for (let i = 0; i < floorPlan.length; ++i) {
+    if (floorPlan[i][liftNum] === 1) {
+      currentFloor = i;
+    }
   }
   return currentFloor;
 }
 
-function setFloorPlan() {
+function initiateFloorPlan() {
   const floorCount = parseInt(document.getElementById("floors").value);
   const liftCount = parseInt(document.getElementById("lifts").value);
   floorPlan.push(Array(liftCount).fill(1));
@@ -57,7 +60,14 @@ function setFloorPlan() {
     floorPlan.push(Array(liftCount).fill(0));
   }
   // to see currentFloorPlan
-  // window.sessionStorage.setItem("floorPlan", JSON.stringify(floorPlan));
+  window.sessionStorage.setItem("floorPlan", JSON.stringify(floorPlan));
+}
+
+function setFloorPlan(currentFloorNum, desiredFloorNum, liftNum) {
+  floorPlan[currentFloorNum][liftNum] = 0;
+  floorPlan[desiredFloorNum][liftNum] = 1;
+  // to see currentFloorPlan
+  window.sessionStorage.setItem("floorPlan", JSON.stringify(floorPlan));
 }
 
 function generateLiftPackageArrTemplate(floorCount, floorNum, currentFloor) {
@@ -85,19 +95,33 @@ function callToFloor(desiredFloorNum, liftNum) {
     .getBoundingClientRect();
 
   // currentFloor's floorLine element
-  const currentFloorNum = getCurrentFloor(liftNum);
-  const currentFloorLineRect = document
-    .getElementById(currentFloorNum)
+  const currentFloorOfLift = getCurrentFloor(liftNum);
+
+  const originalFloorOfLiftLineRect = document
+    .getElementById(0)
+    .getBoundingClientRect();
+
+  const currentFloorOfLiftLineRect = document
+    .getElementById(currentFloorOfLift)
     .getBoundingClientRect();
 
   // diff between bottoms of currentFloorLine and desiredFloorLine
-  const diff = -1 * (currentFloorLineRect.bottom - desiredFloorLineRect.bottom);
+  const diff =
+    -1 * (originalFloorOfLiftLineRect.bottom - desiredFloorLineRect.bottom);
 
-  // lift element of lifId
   const liftElement = document.getElementById(`lift${liftNum}`);
+
+  // lift speed 2s/ floor ~ 2s/ diff
+  const liftSpeed = Math.abs((2 * diff) / consecutiveFloorDiff);
+
+  // setting lift speed
+  liftElement.style.setProperty("transition", `all ${liftSpeed}s`);
 
   // move lift
   liftElement.style.setProperty("transform", `translate(0, ${diff}px)`);
+
+  // set floorPlan
+  setFloorPlan(currentFloorOfLift, desiredFloorNum, liftNum);
 }
 
 function generateUI() {
@@ -113,6 +137,14 @@ function generateUI() {
     floors += `<div class="line" id=${i}>${floorNumTemplate}${liftPackageArrTemplate}</div>`;
   }
   document.getElementById("floorplan").innerHTML = floors;
+
+  // find diff between 2 consecutive floors for lift speed
+  consecutiveFloorDiff = Math.abs(
+    document.getElementById(0).getBoundingClientRect().bottom -
+      document.getElementById(1).getBoundingClientRect().bottom
+  );
+
+  window.sessionStorage.setItem("floorDiff", consecutiveFloorDiff);
 }
 
 function resetUI() {
@@ -122,8 +154,8 @@ function resetUI() {
 }
 
 function resetState() {
-  window.sessionStorage.removeItem("floorPlan");
   floorPlan.splice(0, floorPlan.length);
+  window.sessionStorage.setItem("floorPlan", floorPlan);
 }
 
 function resetAll() {
@@ -132,6 +164,6 @@ function resetAll() {
 }
 
 function initializeSimulation() {
-  setFloorPlan();
+  initiateFloorPlan();
   generateUI();
 }
