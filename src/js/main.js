@@ -145,10 +145,8 @@ function generateUI() {
   );
 }
 
-function resetUI() {
+function resetFloorPlan() {
   document.getElementById("floorplan").innerHTML = "";
-  document.getElementById("floors").value = "";
-  document.getElementById("lifts").value = "";
 }
 
 function resetState() {
@@ -156,12 +154,9 @@ function resetState() {
   window.sessionStorage.setItem("floorPlan", floorPlan);
 }
 
-function resetAll() {
-  resetUI();
-  resetState();
-}
-
 function initializeSimulation() {
+  resetFloorPlan();
+  resetState();
   initiateFloorPlan();
   generateUI();
 }

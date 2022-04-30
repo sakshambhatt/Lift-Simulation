@@ -11,16 +11,17 @@
     <h1>Lift simulation</h1>
     <section class="form">
       <div class="form-input">
-        <label for="floors">enter no of floors:</label>
+        <label for="floors">no of floors:</label>
         <input type="text" placeholder="3" id="floors" />
       </div>
       <div class="form-input">
-        <label for="lifts">enter no of lifts:</label>
+        <label for="lifts">no of lifts:</label>
         <input type="text" placeholder="2" id="lifts" />
       </div>
       <div class="button-row">
-        <button onclick="initializeSimulation()">submit</button>
-        <button onClick="resetAll()">reset</button>
+        <button class="btn-primary" onclick="initializeSimulation()">
+          submit
+        </button>
       </div>
     </section>
     <section>
