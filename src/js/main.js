@@ -1,5 +1,6 @@
 let floorPlan = [];
 let consecutiveFloorDiff = 0;
+const liftCalls = [];
 
 function getButtonList(floorCount, floorNumber, liftNum) {
   // if floorNumber = floorCount - 1
@@ -88,7 +89,34 @@ function generateLiftPackageArrTemplate(floorCount, floorNum, currentFloor) {
   return liftPackageArr;
 }
 
-function callToFloor(desiredFloorNum, liftNum) {
+function liftOperation(
+  liftElement,
+  timeTakenByLift,
+  animationDiff,
+  currentFloorOfLift,
+  desiredFloorNum,
+  liftNum
+) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // setting lift speed
+      liftElement.style.setProperty("transition", `all ${timeTakenByLift}s`);
+
+      // move lift
+      liftElement.style.setProperty(
+        "transform",
+        `translate(0, ${animationDiff}px)`
+      );
+
+      // set floorPlan
+      setFloorPlan(currentFloorOfLift, desiredFloorNum, liftNum);
+
+      resolve(`lift${liftNum} moved to floor ${desiredFloorNum}`);
+    }, timeTakenByLift);
+  });
+}
+
+async function callToFloor(desiredFloorNum, liftNum) {
   // desired floor's floorLine element
   const desiredFloorLineRect = document
     .getElementById(desiredFloorNum)
@@ -105,23 +133,31 @@ function callToFloor(desiredFloorNum, liftNum) {
     .getElementById(currentFloorOfLift)
     .getBoundingClientRect();
 
-  // diff between bottoms of currentFloorLine and desiredFloorLine
-  const diff =
+  // diff between bottoms of originalFloorLine and desiredFloorLine
+  const animationDiff =
     -1 * (originalFloorOfLiftLineRect.bottom - desiredFloorLineRect.bottom);
+
+  const actualDiff =
+    -1 * (currentFloorOfLiftLineRect.bottom - desiredFloorLineRect.bottom);
 
   const liftElement = document.getElementById(`lift${liftNum}`);
 
-  // lift speed 2s/ floor ~ 2s/ diff
-  const liftSpeed = Math.abs((2 * diff) / consecutiveFloorDiff);
+  // lift speed 2s/ floor ~ 2s/ consecutiveFloorDiff
+  const timeTakenByLift = Math.abs((2 * actualDiff) / consecutiveFloorDiff);
 
-  // setting lift speed
-  liftElement.style.setProperty("transition", `all ${liftSpeed}s`);
+  liftCalls.push(
+    liftOperation(
+      liftElement,
+      timeTakenByLift,
+      animationDiff,
+      currentFloorOfLift,
+      desiredFloorNum,
+      liftNum
+    )
+  );
 
-  // move lift
-  liftElement.style.setProperty("transform", `translate(0, ${diff}px)`);
-
-  // set floorPlan
-  setFloorPlan(currentFloorOfLift, desiredFloorNum, liftNum);
+  const currentLiftCall = liftCalls.shift();
+  await currentLiftCall;
 }
 
 function generateUI() {

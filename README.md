@@ -27,5 +27,5 @@ Milestone 2:
 
 Bugs:
 
-- [ ] Call to ground floor happens instantly
+- [x] Call to ground floor happens instantly
 - [ ] In phones, > 3 lifts don't show up
