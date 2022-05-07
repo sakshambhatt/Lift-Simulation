@@ -1,6 +1,7 @@
 let floorPlan = [];
 let consecutiveFloorDiff = 0;
 const liftCalls = [];
+const runningLiftCalls = [];
 
 function getButtonList(floorCount, floorNumber, liftNum) {
   // if floorNumber = floorCount - 1
@@ -97,8 +98,8 @@ function liftOperation(
   desiredFloorNum,
   liftNum
 ) {
-  return new Promise((resolve) => {
-    setTimeout(() => {
+  if (runningLiftCalls.length === 0) {
+    return new Promise((resolve) => {
       // setting lift speed
       liftElement.style.setProperty("transition", `all ${timeTakenByLift}s`);
 
@@ -108,12 +109,31 @@ function liftOperation(
         `translate(0, ${animationDiff}px)`
       );
 
-      // set floorPlan
-      setFloorPlan(currentFloorOfLift, desiredFloorNum, liftNum);
+      setTimeout(() => {
+        // set floorPlan
+        setFloorPlan(currentFloorOfLift, desiredFloorNum, liftNum);
 
-      resolve(`lift${liftNum} moved to floor ${desiredFloorNum}`);
-    }, timeTakenByLift);
-  });
+        resolve(`lift${liftNum} moved to floor ${desiredFloorNum}`);
+      }, timeTakenByLift * 1000 + 2000);
+    });
+  } else {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        // setting lift speed
+        liftElement.style.setProperty("transition", `all ${timeTakenByLift}s`);
+
+        // move lift
+        liftElement.style.setProperty(
+          "transform",
+          `translate(0, ${animationDiff}px)`
+        );
+        // set floorPlan
+        setFloorPlan(currentFloorOfLift, desiredFloorNum, liftNum);
+
+        resolve(`lift${liftNum} moved to floor ${desiredFloorNum}`);
+      }, timeTakenByLift * 1000);
+    });
+  }
 }
 
 async function callToFloor(desiredFloorNum, liftNum) {
@@ -157,7 +177,10 @@ async function callToFloor(desiredFloorNum, liftNum) {
   );
 
   const currentLiftCall = liftCalls.shift();
-  await currentLiftCall;
+  runningLiftCalls.push(currentLiftCall);
+  const res = await currentLiftCall;
+  runningLiftCalls.shift();
+  console.log(res);
 }
 
 function generateUI() {
