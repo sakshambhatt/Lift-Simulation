@@ -8,20 +8,20 @@ function getButtonList(floorCount, floorNumber, liftNum) {
   const upButtonList = `<ul class="button-list"><button onclick="callToFloor(
     ${floorNumber},
     ${liftNum}
-  )"><img src="../../assets/up.png" alt="up"/></button><button class="hidden">d</button></ul>`;
+  )"><img src="assets/down.png" alt="up"/></button><button class="hidden">d</button></ul>`;
   // else if floorNumber = 0
   const downButtonList = `<ul class="button-list"><button class="hidden">u</button><button onclick="callToFloor(
     ${floorNumber},
     ${liftNum}
-  )"><img src="../../assets/down.png" alt="down"/></button></ul>`;
+  )"><img src="assets/down.png" alt="down"/></button></ul>`;
   // else
   const normalButtonList = `<ul class="button-list"><button onclick="callToFloor(
     ${floorNumber},
     ${liftNum}
-  )"><img src="../../assets/up.png" alt="up"/></button><button onclick="callToFloor(
+  )"><img src="assets/up.png" alt="up"/></button><button onclick="callToFloor(
     ${floorNumber},
     ${liftNum}
-  )"><img src="../../assets/down.png" alt="down"/></button></ul>`;
+  )"><img src="assets/down.png" alt="down"/></button></ul>`;
 
   let buttonList = "";
   switch (floorNumber) {
